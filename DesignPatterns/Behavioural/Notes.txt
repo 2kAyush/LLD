@@ -1,0 +1,42 @@
+Behavioural DP() ->
+  - how do classes interact with each other to implement behaviour
+  - how is a particular behaviour implemented
+  - often there are some properties/requirements with the behaviour(method/action) of my system
+  - There can be different types of the behaviour
+  - e.g. There are sorting array behaviours (quick sort, merge sort, bubble sort)
+
+  - When somethings happens/event occurs, multiple classes might want to know about that
+  - They might want to send email, sms, do some analysis, etc.. How can it be implemented is defined by Behavioural DP
+
+Strategy
+  - e.g. When we search in google maps (from A-B) it shows different paths (walking, bike, car, etc..)
+  - If we implement the above straight away then it will have if elses (if mode == walk, etc...) which violates SRP and OCP.
+  SRP : it is concerned about how exactly each variant will work.
+  - We will have to create an interface(Path_calculator) and multiple classes (implements that interface) which takes the responsibility of calculating the path seperately.
+  - Each of the implementation of Path_calculator is a way to calculate path for a particular mode (strategy).
+  - The interface and class names should be suffixed with "Strategy" -> "PathCalculationStrategy".
+
+  - If we know that for a particular thing we will have many algorithms or approaces to follow like the example above we have to use strategy pattern.
+
+
+Strategy vs Adapter
+- Each class implements some behaviour  vs Each class talks to a 3rd party api/library.
+- Structure is same for both(1 interface and multiple classes implementing them)
+
+Observer
+  - Let's say in Flipkart class in the place order method we might need to do a lot of things like update INventory, send notification, email, invoice, etc..
+  - which will again lead to SRP, OCP violation (We can use facade here)
+  Variant of above situation:
+  - Flipkart class itself doesn't know what all to do when placing an order.
+  - OR There might be more things that it might to do at runtime (not all the things as specified above are supposed to be done)
+  - Either all classes keep polling Flipkart class that notify me when an order has been placed(which is not good it will increase the load on Flipkart class and also CPU usage will also increase)
+  - OR Flipkart can tell everybody that an order has been placed (But not everybody wants to know if an order has been placed)
+
+  Solution:
+  - pub sub type thing
+
+  DP:
+  There will be some classes that will produce some interesting events -> Publisher
+  There will be some classes that will want to know about those events -> Subscriber/Observer/listeners
+  - There will be a Subscriber Interface which will be implemented by all the subscribers which will call the Publisher's Register method
+  - Publisher will have 2 methods- RegisterSubscriber(Event, Subscriber) and notify(event)

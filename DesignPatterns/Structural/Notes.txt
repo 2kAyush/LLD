@@ -1,0 +1,109 @@
+Structural DP (revolve around structure of class) ->
+  - How will class be structured
+  - How many attributes will be there in the class
+  - How will a class talk to 3rd party classes.
+
+Adapter ->
+  - Similar to real life adapters (Mac has only C-type ports but if I want to attach HDMI/USB I will use adapter which connects to C-type and allows to connect any type of port)
+  - Adapter ->  It converts an interface not supported to an interface that is supported
+  - breaks ->
+        - SRP(subjective our codebase has a responsibility of handling payment api as well),
+        - O/C (For any change will have to open the payment class as well),
+        - and DI(Our class is directly depended on 3rd party class (Razorpay here))
+  - e.g our app has payment which it handles by Razorpay, but we might want to change it to some other vendor(BillDesk, etc..) If our codebase was tightly coupled with Razorpay then this change will require too much time and testing.
+  - DP -> When you are using 3rd party APIs that are prone to change(almost always), don't depend on them directly.
+          Instead depend on them via and adapter class in between.
+  - How ->
+    - Create an interface for all the methods that we need (not necessarily the same name as that of 3rd party service). But should be meaningful.
+    - Say << Payment_Gateway >>
+    - create adapter classes for each variant out of the interface say < Razorpay >, < BillDesk >
+
+Decorator ->
+  - By Decorating something, the category of the object still remains the same, only some new features are added which might change price.
+  - e.g.: Decorating toppings on pizza; the pizza will still stay pizza.
+  - Real life scenarios Pizza ordering system you can add any number of base and on top of that any toppings in any order and any number of.
+  - In the end you have to print the pizza contents (in order) and the total price.
+  - It can be done by using Builder pattern as well. But.....
+  - Let's say we want to allow pizza creation in 2 manners:
+  -   1. create Pizza from scratch
+  -   2. Create from a known pizza
+  - We can create different classes for all types of pizza which will also not work(it will tho) but we have prototype design pattern for the same(as all the classes will differ only on the attribute's values)
+  Solution:
+  - Before Decorating it was pizza and after Decorating it will still be a pizza
+  - We will Decorate the pizza by wrapping it.
+  - Pizza is an interface(having getCost, getContents method)
+  - Create a base class (which implements Pizza and doesn't take anything in the constructor parameter as it is the start). (Say from where the creation of the pizza will start)
+  - For every feature that we add implement a Decorator class for that which implements Pizza (and in the constructor pass the object of type interface (Pizza))
+    NOTE: You have to pass object of the interface and not the actual classes in the parameters as (toppings can be added anytime(tomato can be added after paneer and vice-versa, so it's better to pass the object of interface))
+  - ThinCrust can implement Pizza and take pizza as parameter in the constructor
+  - Real life usecases
+    - Design Pizza
+    - Design Coffe machine (water + milk + coffee + cream...)
+    - User interfaces (text is inside a button which has a border)
+        - Border(Button(Text("Click me")))
+      all sorts of html elements (div inside div inside table and so on)
+  - How different from inheritance
+    - Inheritance happens based on the code but this can be dynamic (runtime)
+    - Decorating can be in any order (except the base) but base can also be multiple, both of this is not possible in inheritance
+
+Flyweight ->
+  - Let's say for Pubg game there will be players all across the map and they will be firing bullets.
+  - If we create a bullet class naively we might store redundant details, like radius, weight, image of a bullet
+      even tho we know that bullet types are around 4-5 only(5.56mm, 7.62mm).
+  - Instead we can store these common details as a seperate object and point our main Bullet class to that object!.
+
+  (Intrinsic attributes of a class) -> Those attributes which won't change based on the environment (e.g. radius, weight, image of bullet)
+  (Extrinsic attributes of a class) -> Those attributes which will change based on the environment (e.g. Speed, direction, status of the bullet)
+
+  DP says -> When a class has 2 types of attributes(Intrinsic, Extrinsic) and there are supposed to be too many objects of that class(will consume too much memory)
+    Divide that class into 2 different classes 1 with Intrinsic attributes(it will have very few objects) only and another with Extrinsic values(This will have more objects) only and extrinsic class will refer to the fix objects of Intrinsic class.
+
+  E.g. Bullet class in pubg can be divided into 2
+    Bullet              AND               FlyingBullet
+    - image                               - Co_ordinates
+    - radius                              - Speed
+    - weight                              - direction
+    - image                               - status
+    - type                                - bullet Bullet
+
+  Bullet class will have only 5-6 objects (5.56mm, 7.62mm, 9.12mm, 6gauge, etc..)
+  FlyingBullet will have many objects (total no. of bullets supposed to be in the whole game. Say 2000/ player)
+
+  The above DP is supposed to reduce the total memory usage as fields like image can be several kbs or mbs.
+  If we keep everything in 1 class then 2000 bullets per person means 2000*100*2 kb -> 400 mb
+  but after reduction it can come down to around 20-25 mbs only.
+
+  Static attributes can't work here as they will be same for all the classes,
+  but here we have multiple types of bullets.
+  We can create multiple classes for each type of bullets as well but then again
+  it will have to be handled everywhere in the codebase accordingly and these classes
+  will be pointless as they will have only different values (prototype Design problem).
+
+  NOTE: Intrinsic class's objects should always be immutable (private attributes and no setters We can use builder pattern also for intrinsic)
+
+Facade(Boundary - e.g. Boundary of a house, we don't know from outside what is inside the house) ->
+  - Complex/Confusing Situation
+  - Flipkart's make order function might be doing lot of things like do payment, update inventory, send mail, maybe some analytics related things!..
+  - and all of those extra things might require some attributes to be there in the Flipkart class (payment object for making payment, etc..)
+  - And it can become even more complex in future, which will violate SRP and OCP.
+
+  Solution
+  - Move everything from Flipkart class to another class (say Payment_Helper) -> This will be called facade class.
+  - Flipkart will only have payment helper attribute.
+  - Basically Flipkart class will be better now(following SRP and OCP).
+  - Payment Helper class will be having only 1 responsibility(to Help Flipkart handle payment along with other things.)
+
+  DP:
+  - I have a class which to do 1 operation needs to work with a lot of dependencies, it might be
+  violating SRP and OCP
+  - Extract out the logic of working with different dependencies for that method into a seperate class
+  called facade class.
+
+  e.g.
+  We use libraries which generally exposes 1 method and internally calls many methods within.
+
+Adapter vs Facade ->
+
+Adapter wraps single 3rd party library
+
+Facade wraps multiple internal/external classes

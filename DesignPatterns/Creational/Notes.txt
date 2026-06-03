@@ -1,0 +1,105 @@
+Creational DP (About objects creation)->
+  - How will an object be created
+  - where will the object be created
+  - How many objects will be created
+
+SingleTon ->
+  - Ensuring at max only 1 object of a class
+
+  WHY?
+    - A class whose all objects have to share a common resource.
+      E.g Database library, will have to create at max 1 object of the Database class
+      as it will have no benefit if we create multiple objects of it!.
+      anyways DB objects has to create connection with the db server so
+      if we create db connections every time then it will be too much time taking.
+    - Time / memory expensive.
+    - It makes no sense to make multiple instances(no attributes).
+    - Class that must be common for everyone in the codebas(e.g. config class's objects)
+
+  Cons ->
+    - Unit testing becomes difficult(as most of the frameworks inherits the classes to test them).
+    - Mocking is hard (as Generally SingleTons are immutable.)
+
+  Practical uses:
+    - Database object
+    - Controller / Services / Repositories should be SingleTon
+
+Builder ->
+  WHY?
+    - You want to create object of a class and before that want to add
+      some validation on the fields as well before creating the object
+    - If the constructor is having so many parameters (might lead to confusion)
+    - You only want to initialize some variable while object creation
+
+  We can pass map as well as the parameters but typos can be there!..
+
+
+Prototype ->
+  - When want to create a copy of another object
+    -> Create new object and copy 1 by 1
+      Problems -> We might not have access to all the attributes of the class
+             -> We will have to know everything about the class(Tight coupling)
+             -> We might not know about the real class of object in the variable(parent variable holding a child class object)
+  Solution ->
+    let the object class create a copy(clone) of itself!. (a clone method in the class)
+    Clone method there should have implementaion in all the child classes as well otherwise things might go wrong
+
+  So Finally it says that instead of clients themselves copying the objects the classes should provide a clone/copy method
+  we can't use copy constructor here as for that we will have to know about the concrete class of the object!.
+
+  HOW? ->
+    create an interface which has the clone/copy method (Copyable/Cloneable/Prototype). And the base class should implement the interface!.
+    and then all the child functions will have to implement the clone/copy function
+
+  Benefits ->
+    Helps to follow SRP, O/C principles
+
+  Prototype Registry (variation of Prototype DP)->
+    - Prototype can be clubbed with a Registry (which will store sample objects of the class (with different values))
+      And that registry can be used to create new similar objects!..
+
+  Benefits of Prototype Registry ->
+    Avoids us from creating lots of child classes with different attributes values.
+    Basically we should never create child class for different values
+    (only create child class when you have new attributes/methods)
+
+
+  Practical usecase ->
+    - a notebook has pages, type(ruled/plain), price, page_size(A4, A3...), front_page, cover_page
+    - in a specific type of notebook (120 pages, ruled, 40Rs, A4) we can have different types of front_page and cover_page.
+    - we can create a base object with page, size, type and price values set and front_page and cover_page will be null and put them in a registry
+    - and then we can create multiple copies of the same and change the front and cover pages.
+
+Factory ->
+  WHY?
+  - Let's say our code base does some DB operations and we have multiple classes (1 for Mysql, 1 for postgres and similiarly more..)
+  - we want to be able to get the correct object based on the type of DB we are contacting with.
+  - If on every place in the client code we create the object based on if/else or switch then it will violate SRP and O/C and the code will also be too much repetetive.
+
+  Solutions ->
+  1. Simple Factory ->
+    - Create another class (DatabaseFactory) which will return the correct object based on the string type (using if/else or switch case).
+    - It will fix all the issue but DatabaseFactory class itself will violate O/C
+
+  Benefits ->
+    - Maintainable, Reusable and Follows SOLID (upto some extent)
+
+  Cons ->
+    - Simple Factory in itself violates O/C principle
+    - Because of that it's not Maintainable
+
+  2. Factory method
+    - instead of creating objects of concrete class based on type
+    - we create methods inside the abstract class whose signature will be same in all the child classes.
+    - Creat a class like a wrapper over the child class which will create and return it's object.
+    - We will have our main classes (say productA, productB) inherit from product interface(to implement the desired function)
+    - We will have Factory classes (say ProductCreatorA, ProductCreatorB) inherit from Creator abstract base class expose 2 or more methods 1 of them will be the create object method which will return the Product object(A/B)
+    - and other methods will be there to call the product's functions!..
+
+
+  3. Abstract Factory
+    - When there are multiple Factory Methods in a class
+    - It will fail to follow SRP then
+    - we create multiple factories for them and instead of the child class having all those methods to be implemented
+    - we create seperate classes (purpose wise) which has all those methods.
+    - in the end we create object of the factory only and call the functions (which will be implemented by all the child classes)
