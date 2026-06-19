@@ -1,0 +1,4 @@
+from .WinningStrategy import WinningStrategy
+from .NormalWinningStrategy import NormalWinningStrategy
+from .CornerWinningStrategy import CornerWinningStrategy
+from .OrderOneWinningStrategy import OrderOneWinningStrategy

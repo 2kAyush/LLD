@@ -1,0 +1,4 @@
+from .BotPlayingStrategy import BotPlayingStrategy
+from .HardBotPlayingStrategy import HardBotPlayingStrategy
+from .EasyBotPlayingStrategy import EasyBotPlayingStrategy
+from .MediumBotPlayingStrategy import MediumBotPlayingStrategy
