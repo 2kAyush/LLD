@@ -1,0 +1,4 @@
+from .writeBehaviour import WriteBehaviour
+from .smoothWriteBehaviour import SmoothWriteBehaviour
+from .fountainWriteBehaviour import FountainWriteBehaviour
+from .markerWriteBehaviour import MarkerWriteBehaviour
