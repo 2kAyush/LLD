@@ -1,0 +1,2 @@
+from .HandleMoveStrategy import HandleMoveStrategy
+from .NormalMoveStrategy import NormalMoveStrategy
