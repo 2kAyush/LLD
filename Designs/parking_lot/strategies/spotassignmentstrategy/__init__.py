@@ -1,0 +1,2 @@
+from .RandomSpotAssignmentStrategy import RandomSpotAssignmentStrategy
+from .SpotAssignmentStrategy import SpotAssignmentStrategy
